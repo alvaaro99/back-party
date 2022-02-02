@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io'
 
-@WebSocketGateway({namespace:'/chat'})
+@WebSocketGateway({namespace:'/chat',cors:true})
 export class ChatGateway implements OnGatewayConnection{
 
   @WebSocketServer() webSocketServer: Server;
