@@ -28,6 +28,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('logged')
   getIfUserIsLogged(@Res() res: Response) {
-    return res.status(HttpStatus.OK);
+    return res.status(HttpStatus.OK).send();
   }
 }
