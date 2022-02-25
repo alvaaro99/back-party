@@ -12,4 +12,10 @@ export class UsersService {
       (temporalUser) => temporalUser.email === email,
     );
   }
+
+  addNewUser(user: User): User {
+    user.id = '' + Math.random() * (100 - 1) + 1;
+    this.temporalUsers.push(user);
+    return user;
+  }
 }
