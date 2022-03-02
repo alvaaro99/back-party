@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUser } from '../models/createUser.dto';
 import { User } from '../models/user.entity';
 import { Repository } from 'typeorm';
+import { UserRepeatedException } from 'src/exceptions/user-repeated.exception';
 
 @Injectable()
 export class UsersService {
@@ -14,8 +15,12 @@ export class UsersService {
     return this.userRepository.findOne({ email });
   }
 
-  addNewUser(user: CreateUser): Promise<User> {
-    const newUser = this.userRepository.create(user);
-    return this.userRepository.save(newUser);
+  async addNewUser(user: CreateUser): Promise<User> {
+    try {
+      const newUser = this.userRepository.create(user);
+      return await this.userRepository.save(newUser);
+    } catch (err) {
+      if (err.code == 'ER_DUP_ENTRY') throw new UserRepeatedException();
+    }
   }
 }
