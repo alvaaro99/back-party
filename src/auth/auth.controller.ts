@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { User } from 'src/models/user';
+import { CreateUser } from 'src/models/createUser.dto';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -32,8 +32,8 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() user: User, @Res() res: Response) {
-    const newUser = this.userService.addNewUser(user);
+  async register(@Body() user: CreateUser, @Res() res: Response) {
+    const newUser = await this.userService.addNewUser(user);
     return res
       .status(HttpStatus.CREATED)
       .send(await this.authService.login(newUser));

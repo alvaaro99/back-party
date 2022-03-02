@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/models/user';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateUser } from '../models/createUser.dto';
+import { User } from '../models/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  private temporalUsers: User[] = [
-    { id: '1asd12e', email: 'aaa@aaa.com', name: 'Aaaa', password: 'aaa' },
-  ];
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
 
-  findByEmail(email: string): User {
-    return this.temporalUsers.find(
-      (temporalUser) => temporalUser.email === email,
-    );
+  findByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({ email });
   }
 
-  addNewUser(user: User): User {
-    user.id = '' + Math.random() * (100 - 1) + 1;
-    this.temporalUsers.push(user);
-    return user;
+  addNewUser(user: CreateUser): Promise<User> {
+    const newUser = this.userRepository.create(user);
+    return this.userRepository.save(newUser);
   }
 }
