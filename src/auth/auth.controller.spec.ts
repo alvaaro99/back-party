@@ -1,4 +1,4 @@
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../users/users.service';
@@ -8,6 +8,7 @@ import { jwtConstants } from './constants';
 
 describe('AuthController', () => {
   let controller: AuthController;
+  const mockUserService = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,7 +21,10 @@ describe('AuthController', () => {
       ],
       controllers: [AuthController],
       providers: [AuthService, UsersService],
-    }).compile();
+    })
+      .overrideProvider(UsersService)
+      .useValue(mockUserService)
+      .compile();
 
     controller = module.get<AuthController>(AuthController);
   });

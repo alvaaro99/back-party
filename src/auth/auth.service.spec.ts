@@ -7,6 +7,8 @@ import { jwtConstants } from './constants';
 describe('AuthService', () => {
   let service: AuthService;
 
+  const mockUserService = {};
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -16,7 +18,10 @@ describe('AuthService', () => {
         }),
       ],
       providers: [AuthService, UsersService],
-    }).compile();
+    })
+      .overrideProvider(UsersService)
+      .useValue(mockUserService)
+      .compile();
 
     service = module.get<AuthService>(AuthService);
   });
