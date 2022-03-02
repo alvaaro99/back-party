@@ -21,6 +21,6 @@ export class UsersController {
     const { password, ...user } = this.userService.findByEmail(
       (req.user as User).email,
     );
-    res.status(HttpStatus.OK).json(user);
+    return res.status(HttpStatus.OK).json(user);
   }
 }
