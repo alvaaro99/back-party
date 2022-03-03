@@ -1,7 +1,9 @@
 import {
+  Body,
   Controller,
   Get,
   HttpStatus,
+  Put,
   Req,
   Res,
   UseGuards,
@@ -22,5 +24,21 @@ export class UsersController {
       (req.user as User).email,
     );
     return res.status(HttpStatus.OK).json(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('changePassword')
+  async changePassword(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body()
+    { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
+  ) {
+    const userModified = await this.userService.changePassword(
+      req.user as User,
+      oldPassword,
+      newPassword,
+    );
+    return res.status(HttpStatus.OK).json(userModified);
   }
 }

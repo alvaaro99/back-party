@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUser } from '../models/createUser.dto';
 import { User } from '../models/user.entity';
@@ -22,5 +22,16 @@ export class UsersService {
     } catch (err) {
       if (err.code == 'ER_DUP_ENTRY') throw new UserRepeatedException();
     }
+  }
+
+  async changePassword(user: User, oldPassword: string, newPassword: string) {
+    const userToModify = await this.userRepository.findOne({
+      id: user.id,
+      password: oldPassword,
+    });
+    if (!userToModify)
+      throw new HttpException('Password Incorrect', HttpStatus.FORBIDDEN);
+    userToModify.password = newPassword;
+    return await this.userRepository.save(userToModify);
   }
 }
